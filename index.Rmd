@@ -48,7 +48,7 @@ tp <- as.numeric(leader$Total_points)
 
 ##Charts
 
-```{r, echo = FALSE, message=FALSE, warning=FALSE, out.width="70%"}
+```{r, echo = FALSE, message=FALSE, warning=FALSE, out.width="100%"}
 p1 <- ggplot(df, aes(x = Gameweek, y = Total_points, colour = Player, group = Player)) + 
   geom_line() + 
   scale_colour_discrete(guide = 'none')  + 
@@ -64,7 +64,7 @@ grid.draw(gt1)
 
 ```
 
-```{r, echo = FALSE, message=FALSE, warning=FALSE, out.width="70%"}
+```{r, echo = FALSE, message=FALSE, warning=FALSE, out.width="100%"}
  p2 <- ggplot(df, aes(x = Gameweek, y = value_m, colour = Player, group = Player)) +
    geom_line() +
    scale_colour_discrete(guide = 'none')  +
