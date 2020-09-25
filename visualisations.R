@@ -2,6 +2,8 @@ library(tidyverse)
 library(ggplot2)
 library(data.table)
 library(plotly)
+library(directlabels)
+library(grid)
 library(ggthemes) # Load
 
 setwd("~/fpl/fpl_saca")
@@ -35,12 +37,17 @@ max_GW <- max(df$Gameweek)
 
 #Line chart - total points
 
-pl <- ggplot(df,aes(x=Gameweek,y=Total_points, color=Player)) + geom_line() 
-pl <- pl + scale_x_continuous(breaks=seq(0, max_GW, 1))
-pl <- pl + ggtitle("Total points by GW")+ylab('Points')
-pl <- pl + theme_hc()+ scale_colour_hc()
-pl
-print(ggplotly(pl))
+p1 <- ggplot(df, aes(x = Gameweek, y = Total_points, colour = Player, group = Player)) + 
+  geom_line() + 
+  scale_colour_discrete(guide = 'none')  + 
+  scale_x_continuous(breaks=seq(0, max_GW, 1), expand = c(0, 0)) +
+  geom_dl(aes(label = Player), method = list(dl.trans(x = x + .3), "last.bumpup")) +
+  theme_bw() +
+  theme(plot.margin = unit(c(1,4,1,1), "lines")) 
+# Code to turn off clipping
+gt1 <- ggplotGrob(p1)
+gt1$layout$clip[gt1$layout$name == "panel"] <- "off"
+grid.draw(gt1)
 
 #Line plot - value
 
@@ -56,7 +63,9 @@ print(ggplotly(vl))
 
 bp <- ggplot(df,aes(x=reorder(Player,current.points_on_bench), y=current.points_on_bench)) + geom_bar(stat='Identity') 
 bp <- bp + ggtitle("Bench points") +ylab('Points on bench')
-bp <- bp + theme_hc()+ scale_colour_hc() + theme(legend.position = "none") + coord_flip()
+bp <- bp + theme_hc()+ scale_colour_hc() + theme(legend.position = "none") + coord_flip()+
+  geom_text(aes(label=sum(current.points_on_bench)))
+
 bp
 
 # Bar chart - Transfers made

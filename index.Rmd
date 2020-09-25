@@ -9,7 +9,9 @@ output: html_document
 library(tidyverse)
 library(ggplot2)
 library(data.table)
+library(directlabels)
 library(plotly)
+library(grid)
 library(ggthemes) # Load
 
 setwd("~/fpl/fpl_saca")
@@ -47,17 +49,35 @@ tp <- as.numeric(leader$Total_points)
 ##Charts
 
 ```{r, echo = FALSE, message=FALSE, warning=FALSE, out.width="70%"}
-pl <- ggplot(df,aes(x=Gameweek,y=Total_points, color=Player)) + geom_line() + scale_x_continuous(breaks=seq(0, max_GW, 1)) + ggtitle("Total points by GW")+ylab('Points') + theme_hc()+ scale_colour_hc()
-ggplotly(pl)
+p1 <- ggplot(df, aes(x = Gameweek, y = Total_points, colour = Player, group = Player)) + 
+  geom_line() + 
+  scale_colour_discrete(guide = 'none')  + 
+  scale_x_continuous(breaks=seq(0, max_GW, 1), expand = c(0, 0)) +
+  geom_dl(aes(label = Player), method = list(dl.trans(x = x + .3), "last.bumpup")) +
+  theme_bw() +
+  theme(plot.margin = unit(c(1,4,1,1), "lines"))
 
+# Code to turn off clipping
+gt1 <- ggplotGrob(p1)
+gt1$layout$clip[gt1$layout$name == "panel"] <- "off"
+grid.draw(gt1)
 
-#Line plot - value
+```
 
-vl <- ggplot(df,aes(x=Gameweek,y=value_m, color=Player)) + geom_line() 
-vl <- vl + scale_x_continuous(breaks=seq(0, max_GW, 1))
-vl <- vl + ggtitle("Value by GW") +ylab('Value (£m)')
-vl <- vl + theme_hc()+ scale_colour_hc()
-ggplotly(vl)
+```{r, echo = FALSE, message=FALSE, warning=FALSE, out.width="70%"}
+ p2 <- ggplot(df, aes(x = Gameweek, y = value_m, colour = Player, group = Player)) +
+   geom_line() +
+   scale_colour_discrete(guide = 'none')  +
+   scale_x_continuous(breaks=seq(0, max_GW, 1), expand = c(0, 0)) +
+   geom_dl(aes(label = Player), method = list(dl.trans(x = x + .3), "last.bumpup")) +
+   theme_bw() +
+   theme(plot.margin = unit(c(1,4,1,1), "lines"))
+
+ # Code to turn off clipping
+ gt2 <- ggplotGrob(p2)
+ gt2$layout$clip[gt1$layout$name == "panel"] <- "off"
+grid.draw(gt2)
+
 
 # Bar chart - bench points
 
