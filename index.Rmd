@@ -33,6 +33,18 @@ GWleader <- subset(df,Gameweek==max_GW)
 firstGW <- max(GWleader$Gameweek_points)
 GWleader <- subset(df, Gameweek_points==firstGW)
 
+#get max number of transfers
+df2 <- df %>%
+  group_by(Player) %>%
+  summarise(total_transfers = sum(current.event_transfers))
+max_transfers <- max(df2$total_transfers)
+
+#get max transfer cost
+df2 <- df %>%
+  group_by(Player) %>%
+  summarise(total_transfer_cost = sum(current.event_transfers_cost))
+max_transfer_cost <- if(max(df2$total_transfer_cost)==0){4}else{max(df2$total_transfer_cost)}
+
 
 first <- max(df$Total_points)
 leader <- subset(df, Total_points==first)
@@ -91,7 +103,7 @@ bp
 # Bar chart - Transfers made
 
 tm <- ggplot(df,aes(x=reorder(Player,current.event_transfers), y=current.event_transfers)) + geom_bar(stat='Identity') 
-tm <- tm + ggtitle("Transfers") + xlab('Player') + ylab('Transfers') + scale_y_continuous(breaks=seq(0, 40, 2))
+tm <- tm + ggtitle("Transfers") + xlab('Player') + ylab('Transfers') + scale_y_continuous(breaks=seq(0, 1, (max_transfers)))
 tm <- tm + theme_hc()+ scale_colour_hc() + theme(legend.position = "none") + coord_flip()
 tm
 
@@ -99,7 +111,7 @@ tm
 # Bar chart - Transfer spend
 
 ts <- ggplot(df,aes(x=reorder(Player,current.event_transfers_cost), y=current.event_transfers_cost)) + geom_bar(stat='Identity') 
-ts <- ts + ggtitle("Transfer spend") +ylab('Transfer spend') + xlab('Player') + scale_y_continuous(breaks=seq(0, 40, 2))
+ts <- ts + ggtitle("Transfer spend") +ylab('Transfer spend') + xlab('Player') + scale_y_continuous(breaks=seq(0, 4, max_transfer_cost))
 ts <- ts + theme_hc()+ scale_colour_hc() + theme(legend.position = "none") + coord_flip()
 ts
 

@@ -27,6 +27,12 @@ leader <- subset(df, Total_points==first)
 l <- as.character(leader$player_name)
 tp <- as.numeric(leader$Total_points)
 
+df2 <- df %>%
+  group_by(Player) %>%
+  summarise(total_transfer_cost = sum(current.event_transfers_cost))
+max_transfer_cost <- if(max(df2$total_transfer_cost)==0){4}else{max(df2$total_transfer_cost)}
+
+
 
 ?subset
 
@@ -69,9 +75,13 @@ bp <- bp + theme_hc()+ scale_colour_hc() + theme(legend.position = "none") + coo
 bp
 
 # Bar chart - Transfers made
+df2 <- df %>%
+  group_by(Player) %>%
+  summarise(total_transfers = sum(current.event_transfers))
+max_transfers <- max(df2$total_transfers)
 
 tm <- ggplot(df,aes(x=reorder(Player,current.event_transfers), y=current.event_transfers)) + geom_bar(stat='Identity') 
-tm <- tm + ggtitle("Transfers") + xlab('Transfers') + ylab('Transfers') + scale_y_continuous(breaks=seq(0, 16, 1))
+tm <- tm + ggtitle("Transfers") + xlab('Transfers') + ylab('Transfers') + scale_y_continuous(breaks=seq(0, 1, 1))
 tm <- tm + theme_hc()+ scale_colour_hc() + theme(legend.position = "none") + coord_flip()
 tm
 
@@ -79,7 +89,7 @@ tm
 # Bar chart - Transfer spend
 
 ts <- ggplot(df,aes(x=reorder(Player,current.event_transfers_cost), y=current.event_transfers_cost)) + geom_bar(stat='Identity') 
-ts <- ts + ggtitle("Transfer spend") +ylab('Transfer spend') + scale_y_continuous(breaks=seq(0, 16, 1))
+ts <- ts + ggtitle("Transfer spend") +ylab('Transfer spend') + scale_y_continuous(breaks=seq(0, 1, 1))
 ts <- ts + theme_hc()+ scale_colour_hc() + theme(legend.position = "none") + coord_flip()
 ts
 
