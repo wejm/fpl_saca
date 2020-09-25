@@ -55,7 +55,8 @@ p1 <- ggplot(df, aes(x = Gameweek, y = Total_points, colour = Player, group = Pl
   scale_x_continuous(breaks=seq(0, max_GW, 1), expand = c(0, 0)) +
   geom_dl(aes(label = Player), method = list(dl.trans(x = x + .3), "last.bumpup")) +
   theme_bw() +
-  theme(plot.margin = unit(c(1,4,1,1), "lines"))
+  theme(plot.margin = unit(c(1,4,1,1), "lines")) +
+  ggtitle("Total points") + ylab('Total points')
 
 # Code to turn off clipping
 gt1 <- ggplotGrob(p1)
@@ -71,7 +72,8 @@ grid.draw(gt1)
    scale_x_continuous(breaks=seq(0, max_GW, 1), expand = c(0, 0)) +
    geom_dl(aes(label = Player), method = list(dl.trans(x = x + .3), "last.bumpup")) +
    theme_bw() +
-   theme(plot.margin = unit(c(1,4,1,1), "lines"))
+   theme(plot.margin = unit(c(1,4,1,1), "lines")) +
+   ggtitle("Team value") + ylab('Team value (m)')
 
  # Code to turn off clipping
  gt2 <- ggplotGrob(p2)
