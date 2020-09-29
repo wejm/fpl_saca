@@ -57,11 +57,14 @@ grid.draw(gt1)
 
 #Line plot - value
 
-vl <- ggplot(df,aes(x=Gameweek,y=value_m, color=Player)) + geom_line() 
-vl <- vl + scale_x_continuous(breaks=seq(0, max_GW, 1))
-vl <- vl + ggtitle("Value by GW") +ylab('Value (£m)')
-vl <- vl + theme_hc()+ scale_colour_hc()
-vl
+p1 <- ggplot(df, aes(x = Gameweek, y = Total_points, colour = Player, group = Player)) + 
+  geom_line() + 
+  scale_colour_discrete(guide = 'none')  + 
+  scale_x_continuous(breaks=seq(0, max_GW, 1), expand = c(0, 0)) +  scale_y_continuous(breaks=seq(0, max(df$current.value), 0.1)) +
+geom_dl(aes(label = Player), method = list(dl.trans(x = x + .3), "last.bumpup")) +
+  theme_bw() +
+  theme(plot.margin = unit(c(1,4,1,1), "lines")) +
+  ggtitle("Total points") + ylab('Total points')
 
 print(ggplotly(vl))
 
@@ -78,10 +81,10 @@ bp
 df2 <- df %>%
   group_by(Player) %>%
   summarise(total_transfers = sum(current.event_transfers))
-max_transfers <- max(df2$total_transfers)
+max_transfers <- (max(df2$total_transfers))
 
 tm <- ggplot(df,aes(x=reorder(Player,current.event_transfers), y=current.event_transfers)) + geom_bar(stat='Identity') 
-tm <- tm + ggtitle("Transfers") + xlab('Transfers') + ylab('Transfers') + scale_y_continuous(breaks=seq(0, 1, 1))
+tm <- tm + ggtitle("Transfers") + xlab('Player') + ylab('Transfers') + scale_y_continuous(breaks=seq(0, max_transfers, 1))
 tm <- tm + theme_hc()+ scale_colour_hc() + theme(legend.position = "none") + coord_flip()
 tm
 
@@ -92,6 +95,6 @@ ts <- ggplot(df,aes(x=reorder(Player,current.event_transfers_cost), y=current.ev
 ts <- ts + ggtitle("Transfer spend") +ylab('Transfer spend') + scale_y_continuous(breaks=seq(0, 1, 1))
 ts <- ts + theme_hc()+ scale_colour_hc() + theme(legend.position = "none") + coord_flip()
 ts
-
+?scale_y_continuous
 Sys.Date()
 install.packages('leaflet')
